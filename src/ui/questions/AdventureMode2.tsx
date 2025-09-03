@@ -2,6 +2,7 @@ import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { useStory } from '../story/StoryStore';
 import bg1Url from '../../../bg2.png';
 import { audioManager } from '../audioManager';
+import { useCoins } from '../coinSystem';
 // import '../../../api/image'
 
 type Props = {
@@ -13,10 +14,12 @@ type Props = {
   onSwitchToQuestions?: () => void;
   onGoToPrevious?: () => void;
   onSpellingComplete?: (isComplete: boolean) => void;
+  onNavigateToPetStore?: () => void;
 };
 
-export function AdventureMode2({ selectedStoryId, onAdventureMessage, onStoryUpdate, adventureMessages: propAdventureMessages, onAdventureMessagesUpdate, onSwitchToQuestions, onGoToPrevious, onSpellingComplete }: Props): JSX.Element {
+export function AdventureMode2({ selectedStoryId, onAdventureMessage, onStoryUpdate, adventureMessages: propAdventureMessages, onAdventureMessagesUpdate, onSwitchToQuestions, onGoToPrevious, onSpellingComplete, onNavigateToPetStore }: Props): JSX.Element {
   const { state: storyState, appendMessage: appendStoryMessage, reset: resetStory, consumePendingAdventureChat, setMetadata } = useStory();
+  const { coins, addCoins } = useCoins();
   
   // Get story-specific context based on selectedStoryId
   const getStoryContext = () => {
@@ -896,7 +899,23 @@ Keep it within 20 words. Keep it encouraging and focus on the learning process r
       if (onSpellingComplete) {
         onSpellingComplete(isSpellingComplete);
       }
-    }, [isSpellingComplete, onSpellingComplete]);
+      
+      // Award coins when spelling is completed for the first time
+      if (isSpellingComplete && totalBlanks > 0) {
+        const completionKey = `spelling_completed_${messageId}`;
+        const hasBeenRewarded = localStorage.getItem(completionKey);
+        
+        if (!hasBeenRewarded) {
+          // Award 10 coins per correctly spelled word
+          const coinsEarned = totalBlanks * 10;
+          addCoins(coinsEarned);
+          localStorage.setItem(completionKey, 'true');
+          
+          // Show a brief notification (optional)
+          console.log(`🎉 Earned ${coinsEarned} coins for spelling correctly!`);
+        }
+      }
+    }, [isSpellingComplete, onSpellingComplete, totalBlanks, messageId, addCoins]);
 
     let blankIndex = 0;
 
@@ -2126,6 +2145,67 @@ Current Phase: ${phase.toUpperCase()} (${withinPhaseIndex + 1}/3)`
             {currentPhase === 'chat' ? '💬' : '📝'} 
             {currentPhase === 'chat' ? 'Adventure Chat' : 'Spelling Challenge'} 
             ({phaseProgress + 1}/3)
+          </div>
+
+          {/* Coin display and pet store icon */}
+          <div style={{
+            position: 'absolute',
+            top: 16,
+            right: 24,
+            zIndex: 2,
+            display: 'flex',
+            alignItems: 'center',
+            gap: 12
+          }}>
+            {/* Coin display */}
+            <div style={{
+              background: 'linear-gradient(135deg, #FFD700 0%, #FFA500 100%)',
+              color: '#8B4513',
+              padding: '6px 12px',
+              borderRadius: 16,
+              fontSize: 12,
+              fontWeight: 600,
+              fontFamily: 'Quicksand, sans-serif',
+              boxShadow: '0 4px 12px rgba(0,0,0,0.2)',
+              display: 'flex',
+              alignItems: 'center',
+              gap: 4
+            }}>
+              <span style={{ fontSize: 14 }}>🪙</span>
+              <span>{coins}</span>
+            </div>
+
+            {/* Pet store icon */}
+            <button
+              onClick={() => {
+                onNavigateToPetStore?.();
+              }}
+              style={{
+                background: 'linear-gradient(135deg, #EC4899 0%, #DB2777 100%)',
+                color: 'white',
+                border: 'none',
+                padding: '8px',
+                borderRadius: '50%',
+                width: 32,
+                height: 32,
+                cursor: 'pointer',
+                fontSize: 14,
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                boxShadow: '0 4px 12px rgba(0,0,0,0.2)',
+                transition: 'all 0.2s ease'
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.transform = 'scale(1.1)';
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.transform = 'scale(1)';
+              }}
+              title="Pet Store"
+            >
+              🐾
+            </button>
           </div>
           
           <div style={{ position: 'relative', zIndex: 1, display: 'flex', flexDirection: 'column', padding: '20px 24px', height: '100%' }}>

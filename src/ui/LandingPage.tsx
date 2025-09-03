@@ -4,9 +4,10 @@ import { Button } from './components/Button';
 type Props = {
   onSelectStory?: (storyId: string, mode?: 'adventure' | 'picture-book') => void;
   onCreateNewStory?: () => void;
+  onOpenPets?: () => void;
 };
 
-export function LandingPage({ onSelectStory, onCreateNewStory }: Props): JSX.Element {
+export function LandingPage({ onSelectStory, onCreateNewStory, onOpenPets }: Props): JSX.Element {
   const [selectedGrade, setSelectedGrade] = useState<string>('2');
   const [selectedLevel, setSelectedLevel] = useState<'start' | 'mid'>('start');
   const [showCompanionTooltip, setShowCompanionTooltip] = useState(false);
@@ -802,7 +803,43 @@ export function LandingPage({ onSelectStory, onCreateNewStory }: Props): JSX.Ele
               <AuthorLevelBadge />
             </div>
           </div>
-          <div style={{ marginTop: 4 }}>
+          <div style={{ 
+            marginTop: 4,
+            display: 'flex',
+            alignItems: 'center',
+            gap: 16
+          }}>
+            {/* Your Pets Button */}
+            <button
+              onClick={onOpenPets}
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: 12,
+                padding: '16px 20px',
+                borderRadius: 16,
+                background: 'linear-gradient(135deg, #22c55e 0%, #16a34a 100%)',
+                color: 'white',
+                border: 'none',
+                cursor: 'pointer',
+                fontSize: 16,
+                fontWeight: 600,
+                fontFamily: 'Quicksand, system-ui, sans-serif',
+                boxShadow: '0 8px 24px rgba(34, 197, 94, 0.3)',
+                transition: 'all 200ms ease'
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.boxShadow = '0 12px 32px rgba(34, 197, 94, 0.4)';
+                e.currentTarget.style.transform = 'translateY(-2px)';
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.boxShadow = '0 8px 24px rgba(34, 197, 94, 0.3)';
+                e.currentTarget.style.transform = 'translateY(0px)';
+              }}
+            >
+              <span>🐕</span>
+              <span>Your Pets</span>
+            </button>
             <GradeSelector />
           </div>
         </div>

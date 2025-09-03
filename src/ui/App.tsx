@@ -6,6 +6,7 @@ import { LandingPage } from './LandingPage';
 import { PictureBook } from './PictureBook';
 import { LondonPictureBook } from './LondonPictureBook';
 import { ConnorPictureBook } from './ConnorPictureBook';
+import { PetPage } from './PetPage';
 import { Button } from './components/Button';
 import { analytics } from '../analytics/posthog';
 
@@ -18,6 +19,7 @@ export function App(): JSX.Element {
   const [selectedStoryId, setSelectedStoryId] = useState<string | null>(null);
   const [storyMode, setStoryMode] = useState<'adventure' | 'picture-book'>('picture-book');
   const [currentWorld, setCurrentWorld] = useState<'asher' | 'connor'>('asher');
+  const [showPetPage, setShowPetPage] = useState(false);
 
   // Practice loop state (placeholder assets, no DALL·E)
   const [chapter, setChapter] = useState<1 | 2>(1);
@@ -159,7 +161,31 @@ export function App(): JSX.Element {
     setSelectedStoryId(null);
     setStoryMode('picture-book');
     setCurrentWorld('asher');
+    setShowPetPage(false);
   }, [selectedStoryId, storyMode]);
+
+  const handleOpenPets = useCallback(() => {
+    console.log('Opening pet page');
+    
+    // Analytics: Track pet page navigation
+    analytics.track('Pet Page Opened', {
+      timestamp: new Date().toISOString(),
+    });
+    
+    setShowLandingPage(false);
+    setShowPetPage(true);
+    setSelectedStoryId(null);
+  }, []);
+
+  const handleBackFromPets = useCallback(() => {
+    // Analytics: Track navigation back from pets
+    analytics.track('Back from Pets', {
+      timestamp: new Date().toISOString(),
+    });
+    
+    setShowLandingPage(true);
+    setShowPetPage(false);
+  }, []);
 
   const handleNextWorld = useCallback(() => {
     // Analytics: Track world navigation
@@ -330,12 +356,22 @@ export function App(): JSX.Element {
     }
   }
 
+  // Show pet page
+  if (showPetPage) {
+    return (
+      <PetPage 
+        onBack={handleBackFromPets}
+      />
+    );
+  }
+
   // Show landing page first
   if (showLandingPage) {
     return (
       <LandingPage 
         onSelectStory={handleSelectStory}
         onCreateNewStory={handleCreateNewStory}
+        onOpenPets={handleOpenPets}
       />
     );
   }
@@ -487,6 +523,7 @@ export function App(): JSX.Element {
               console.log('All questions completed!');
               // Handle completion logic here
             }}
+            onNavigateToPetStore={handleOpenPets}
           />
         </div>
       </div>

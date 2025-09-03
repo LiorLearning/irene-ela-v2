@@ -13,9 +13,10 @@ import { audioManager } from './audioManager';
 type Props = {
   selectedStoryId?: string | null;
   onComplete?: () => void;
+  onNavigateToPetStore?: () => void;
 };
 
-export function QuestionPanel({ selectedStoryId, onComplete }: Props): JSX.Element {
+export function QuestionPanel({ selectedStoryId, onComplete, onNavigateToPetStore }: Props): JSX.Element {
   const { state: storyState, appendEvent, setHookForStep, setPendingAdventureChat } = useStory();
   // Blending question data (first question) - COMMENTED OUT FOR NOW
   const blendingQuestions: BlendingQuestion[] = []; // blendingQuestionsData;
@@ -4127,6 +4128,7 @@ Be conversational, not scripted. Acknowledge what they actually wrote. Keep resp
             // Go to previous step (same as the always-visible Previous button)
             handlePreviousQuestion();
           }}
+          onNavigateToPetStore={onNavigateToPetStore}
         />
       ) : isAdventureMode2 ? (
         <AdventureMode 

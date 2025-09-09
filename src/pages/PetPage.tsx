@@ -478,12 +478,12 @@ export function PetPage({}: Props): JSX.Element {
         return getRandomThought(growingThoughts);
       } else {
         const happyThoughts = [
-          "Cluck cluck! 🥳 I feel amazing, Irene! Now... could you get me some hen friends to play with!",
-          "Cluck cluck! I'm so strong now! 💪 Maybe it's time to find some playmates to strut with?",
-          "I feel fantastic! 🌟 All those seeds worked! Now I'm ready for some barnyard adventures with friends!",
-          "Amazing! I'm at my best! ✨ Irene, can you help me find some buddies to peck around with?",
-          "Hooray! I'm fully grown! 🎉 Can you help me find some hen friends to play with?",
-          "Perfect! I feel incredible! 🚀 Maybe it's time to find some playmates for farmyard adventures?"
+          "Cluck cluck! 🥳 I feel amazing, Irene! Will you please come again tomorrow to see how much I've grown?",
+          "Cluck cluck! I'm so strong now! 💪 Maybe you'll visit tomorrow to watch me grow even more?",
+          "I feel fantastic! 🌟 All those seeds worked! Please come back tomorrow to see me grow!",
+          "Amazing! I'm at my best! ✨ Irene, will you return tomorrow to see me grow?",
+          "Hooray! I'm fully grown! 🎉 Will you come again tomorrow to witness me grow?",
+          "Perfect! I feel incredible! 🚀 Maybe you'll visit tomorrow to see me grow?"
         ];
         return getRandomThought(happyThoughts);
       }
